@@ -3,10 +3,10 @@ package com.ivanzkyanto.stolia.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "task")
+@Table(name = "taskS")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,11 +23,11 @@ public class Task {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date changedAt;
+    private LocalDateTime changedAt;
 
     @Column(nullable = false, length = 45)
     private String todo;
@@ -35,7 +35,18 @@ public class Task {
     private String description;
 
     @Column(name = "is_checked", nullable = false, columnDefinition = "boolean default false")
-    private Boolean checked = false;
+    private Boolean checked;
 
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        changedAt = createdAt;
+        checked = false;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        changedAt = LocalDateTime.now();
+    }
 
 }

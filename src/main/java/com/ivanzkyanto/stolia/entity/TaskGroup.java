@@ -3,9 +3,9 @@ package com.ivanzkyanto.stolia.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "task_groups")
@@ -21,11 +21,11 @@ public class TaskGroup {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date changedAt;
+    private LocalDateTime changedAt;
 
     @Column(nullable = false, length = 45)
     private String name;
@@ -33,13 +33,27 @@ public class TaskGroup {
     private String description;
 
     @Column(nullable = false, columnDefinition = "int unsigned default 0")
-    private Integer checkedTaskCount;
+    private Integer taskCount;
 
     @Column(nullable = false, columnDefinition = "int unsigned default 0")
-    private Integer taskCount;
+    private Integer checkedTaskCount;
 
     @OneToMany(mappedBy = "group")
     @Singular
-    private Set<Task> tasks = new HashSet<>();
+    @NonNull
+    private List<Task> tasks = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        changedAt = createdAt;
+        taskCount = 0;
+        checkedTaskCount = 0;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        changedAt = LocalDateTime.now();
+    }
 
 }
