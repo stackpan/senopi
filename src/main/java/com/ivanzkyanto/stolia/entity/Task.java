@@ -26,8 +26,7 @@ public class Task {
     private LocalDateTime createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private LocalDateTime changedAt;
+    private LocalDateTime checkedAt;
 
     @Column(nullable = false, length = 45)
     private String todo;
@@ -40,13 +39,7 @@ public class Task {
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
-        changedAt = createdAt;
         checked = false;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        changedAt = LocalDateTime.now();
     }
 
 }

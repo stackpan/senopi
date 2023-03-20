@@ -23,10 +23,6 @@ public class TaskGroup {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private LocalDateTime changedAt;
-
     @Column(nullable = false, length = 45)
     private String name;
 
@@ -46,14 +42,8 @@ public class TaskGroup {
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
-        changedAt = createdAt;
         taskCount = 0;
         checkedTaskCount = 0;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        changedAt = LocalDateTime.now();
     }
 
 }
