@@ -8,42 +8,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "task_groups")
+@Table(name = "plan_groups")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TaskGroup {
+public class PlanGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     private String id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false, length = 45)
+    @Column(nullable = false, length = 64)
     private String name;
 
     private String description;
 
     @Column(nullable = false, columnDefinition = "int unsigned default 0")
-    private Integer taskCount;
+    private Integer planCount;
 
     @Column(nullable = false, columnDefinition = "int unsigned default 0")
-    private Integer checkedTaskCount;
+    private Integer checkedPlanCount;
 
     @OneToMany(mappedBy = "group")
     @Singular
     @NonNull
-    private List<Task> tasks = new ArrayList<>();
+    private List<Plan> plans = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
-        taskCount = 0;
-        checkedTaskCount = 0;
+        planCount = 0;
+        checkedPlanCount = 0;
+    }
+
+    public void addPlanCount() {
+        planCount++;
+    }
+
+    public void subtractPlanCount() {
+        if (planCount > 0) planCount--;
+    }
+
+    public void addCheckedPlanCount() {
+        if (checkedPlanCount <= planCount) checkedPlanCount++;
+    }
+
+    public void subtractCheckedPlanCount() {
+        if (checkedPlanCount > 0) planCount--;
     }
 
 }
