@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="h-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link th:href="@{styles.css}" rel="stylesheet">
+</head>
+
+<title>Stolia - Groups</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+
+<header>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container justify-content-center">
+            <span class="navbar-brand mb-0 h1">Groups</span>
+        </div>
+    </nav>
+</header>
+
+<main class="flex-shrink-0 py-4">
+    <div class="container">
+        <section>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <div class="d-grid gap-2 d-md-flex justify-content-end">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#groupFormModal">Add New</button>
+                    </div>
+                </li>
+            </ul>
+            <hr class="my-5">
+        </section>
+        <section class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" data-masonry='{"percentPosition": true }'>
+            <div class="col" th:each="group : ${groups}">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${group.getName()}"></h5>
+                        <p class="card-text" th:text="${group.getDescription()}"></p>
+                        <span class="badge text-bg-success">Checked <span th:text="${group.getCheckedPlanCount()}"></span></span>
+                        <span class="badge text-bg-primary">Total <span th:text="${group.getPlanCount()}"></span></span>
+                        <a class="stretched-link" th:href="@{'/plans?group=' + ${group.getId()}}"></a>
+                    </div>
+                    <div class="card-footer text-body-secondary" th:text="${group.getCreatedAt().toString()}"></div>
+                </div>
+            </div>
+        </section>
+        <section class="modal fade" tabindex="-1" id="groupFormModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Group</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="groupForm" th:action="@{/group/create}" th:object="${groupForm}" method="post">
+                        <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="firstName" th:field="*{name}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label">Description</label>
+                                    <input type="text" class="form-control" id="lastName" th:field="*{description}">
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetGroupForm()">Cancel</button>
+                            <input type="submit" class="btn btn-primary" value="Save">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer mt-auto">
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+    <span class="navbar-text">
+      Made by <a href="https://github.com/stackpan">Stackpan</a> a.k.a Ivan Rizkyanto. Powered by <a href="https://spring.io">Spring Boot</a>
+    </span>
+        </div>
+    </nav>
+</footer>
+
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+<script th:src="@{/extra/masonry.pkgd.min.js}" async></script>
+<script th:src="@{script.js}"></script>
+
+</body>
+
+</html>
