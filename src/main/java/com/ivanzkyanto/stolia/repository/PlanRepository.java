@@ -13,6 +13,8 @@ public interface PlanRepository extends JpaRepository<Plan, String> {
 
     Optional<List<Plan>> findAllByGroup(PlanGroup group);
 
+    Optional<List<Plan>> findAllByGroupId(String groupId);
+
     void queryPlanByCheckedTrue();
 
     Integer countByGroup(PlanGroup group);

@@ -60,7 +60,7 @@ public class PlanGroup {
     }
 
     public void subtractCheckedPlanCount() {
-        if (checkedPlanCount > 0) planCount--;
+        if (checkedPlanCount > 0) checkedPlanCount--;
     }
 
 }

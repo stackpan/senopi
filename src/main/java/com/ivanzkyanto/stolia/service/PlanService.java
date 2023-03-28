@@ -9,6 +9,8 @@ public interface PlanService {
 
     List<Plan> getAllByGroup(PlanGroup group);
 
+    List<Plan> getAllByGroupId(String groupId);
+
     Plan getById(String id);
 
     Plan createNew(Plan plan);

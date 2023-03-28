@@ -1,4 +1,4 @@
-package com.ivanzkyanto.stolia.service;
+package com.ivanzkyanto.stolia.service.impl;
 
 import com.ivanzkyanto.stolia.entity.PlanGroup;
 import com.ivanzkyanto.stolia.events.PlanCheckUpdateEvent;
@@ -7,6 +7,7 @@ import com.ivanzkyanto.stolia.events.PlanDestroyedEvent;
 import com.ivanzkyanto.stolia.exception.PlanGroupNotFoundException;
 import com.ivanzkyanto.stolia.exception.PlanNotFoundException;
 import com.ivanzkyanto.stolia.repository.PlanGroupRepository;
+import com.ivanzkyanto.stolia.service.PlanGroupService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

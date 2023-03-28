@@ -1,4 +1,4 @@
-package com.ivanzkyanto.stolia.service;
+package com.ivanzkyanto.stolia.service.impl;
 
 import com.ivanzkyanto.stolia.entity.Plan;
 import com.ivanzkyanto.stolia.entity.PlanGroup;
@@ -7,6 +7,7 @@ import com.ivanzkyanto.stolia.events.PlanCreatedEvent;
 import com.ivanzkyanto.stolia.events.PlanDestroyedEvent;
 import com.ivanzkyanto.stolia.exception.PlanNotFoundException;
 import com.ivanzkyanto.stolia.repository.PlanRepository;
+import com.ivanzkyanto.stolia.service.PlanService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -72,6 +73,11 @@ public class PlanServiceImpl implements PlanService, ApplicationEventPublisherAw
 
             eventPublisher.publishEvent(new PlanDestroyedEvent(plan));
         });
+    }
+
+    @Override
+    public List<Plan> getAllByGroupId(String groupId) {
+        return repository.findAllByGroupId(groupId).orElseThrow(PlanNotFoundException::new);
     }
 
     private void consumePlan(String id, Consumer<Plan> planConsumer) {
