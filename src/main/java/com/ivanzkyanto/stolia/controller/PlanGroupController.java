@@ -27,7 +27,7 @@ public class PlanGroupController {
     }
 
     @PostMapping("/group/create")
-    public String saveGroup(@ModelAttribute PlanGroupForm groupForm) {
+    public String createGroup(@ModelAttribute PlanGroupForm groupForm) {
         var group = PlanGroup.builder()
                 .name(groupForm.getName())
                 .description(groupForm.getDescription())

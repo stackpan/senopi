@@ -1,3 +1,3 @@
-function resetGroupForm() {
-    document.getElementById("groupForm").reset();
+function resetForm(formId) {
+    document.getElementById(formId).reset();
 }
