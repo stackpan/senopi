@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: 'postgres:alpine'
+    restart: on-failure
+    environment:
+      POSTGRES_DB: '${POSTGRES_DB:-senopi}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-secret}'
+      POSTGRES_USER: '${POSTGRES_USER:-user}'
+    ports:
+      - '5432:5432'
