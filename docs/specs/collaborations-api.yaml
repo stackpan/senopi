@@ -1,0 +1,140 @@
+openapi: 3.0.3
+info:
+  title: Collaborations API
+  description: Collaborations API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+paths:
+  /api/collaborations:
+    post:
+      description: Add collaborator
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                noteId:
+                  type: string
+                userId:
+                  type: string
+              required:
+                - noteId
+                - userId
+      responses:
+        201:
+          description: Collaboration created response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                data:
+                  collaborationId: collaboration_id
+        400:
+          description: Bad payload response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              examples:
+                The user shouldn't an owner:
+                  value:
+                    status: fail
+                    message: Gagal menambahkan karena user adalah pemilik catatan
+                The user is already a collaborator:
+                  value:
+                    status: fail
+                    message: User sudah ditambahkan sebelumnya
+                The user is not exists:
+                  value:
+                    status: fail
+                    message: User tidak ada
+                The note is not exists:
+                  value:
+                    status: fail
+                    message: Catatan tidak ada
+        403:
+          description: Forbidden response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Anda tidak berhak mengakses resource ini
+    delete:
+      description: Delete collaborator
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                noteId:
+                  type: string
+                userId:
+                  type: string
+              required:
+                - noteId
+                - userId
+      responses:
+        200:
+          description: Collaboration deleted response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: Kolaborasi berhasil dihapus
+        403:
+          description: Forbidden response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Anda tidak berhak mengakses resource ini
+        404:
+          description: Not found response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Kolaborasi tidak ditemukan

@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: Uploads API
+  description: Uploads API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+paths:
+  /api/upload/images:
+    post:
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              title: data
+              format: binary
+      responses:
+        201:
+          description: Status success
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      fileLocation:
+                        type: string
+              example:
+                status: success
+                data:
+                  fileLocation: 'path/to/file'

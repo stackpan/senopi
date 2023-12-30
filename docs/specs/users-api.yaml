@@ -1,0 +1,152 @@
+openapi: 3.0.3
+info:
+  title: Users API Back-End
+  description: Users API Back-End
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+paths:
+  /api/users/:
+    post:
+      description: Adding user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                fullname:
+                  type: string
+      responses:
+        201:
+          description: Success created response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: User berhasil ditambahkan
+                data:
+                  userId: user_id
+        400:
+          description: Client error response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              examples:
+                Username exists:
+                  value:
+                    status: fail
+                    message: Gagal menambahkan user. Username sudah digunakan.
+                Bad payload:
+                  value:
+                    status: fail
+                    message:
+                      username: 'username is required'
+                      password: 'password is required'
+                      fullname: 'fullname is required'
+    get:
+      description: Search user
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Search success
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    required:
+                      - users
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - id
+                            - username
+                            - fullname
+                          properties:
+                            id:
+                              type: string
+                            username:
+                              type: string
+                            fullname:
+                              type: string
+              example:
+                status: success
+                data:
+                  users:
+                    - id: user1_id
+                      username: user1_username
+                      fullname: user1_fullname
+                    - id: user2_id
+                      username: user2_username
+                      fullname: user2_fullname
+  /api/users/{id}:
+    get:
+      description: Get user info
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                data:
+                  user:
+                    id: user_id
+                    username: user_username
+                    fullname: user_fullname
+        400:
+          description: Not found response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: User tidak ditemukan

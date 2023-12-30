@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Exports API
+  description: Exports API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+paths:
+  /api/export/notes:
+    post:
+      description: Send export notes queue
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - targetEmail
+              properties:
+                targetEmail:
+                  type: string
+      responses:
+        201:
+          description: Created response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+              example:
+                status: success
+                message: Permintaan Anda dalam antrean
+        400:
+          description: Bad request response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: object
+              examples:
+                invalid email format:
+                  value:
+                    status: fail
+                    message: targetEmail tidak valid

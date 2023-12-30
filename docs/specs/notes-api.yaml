@@ -1,0 +1,337 @@
+openapi: 3.0.3
+info:
+  title: Notes API Back-End
+  description: Notes API Back-End
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+paths:
+  /api/notes:
+    post:
+      description: Create note
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                body:
+                  type: string
+      responses:
+        201:
+          description: Success created response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: 'Catatan berhasil ditambahkan'
+                data:
+                  noteId: note_id
+        500:
+          description: Failed response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: error
+                message: 'Catatan gagal untuk ditambahkan'
+    get:
+      description: Getting all notes
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      notes:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            title:
+                              type: string
+                            body:
+                              type: string
+                            tags:
+                              type: array
+                              items:
+                                type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
+              examples:
+                Have notes:
+                  value:
+                    status: success
+                    data:
+                      notes:
+                        - id: note_id
+                          title: note_title
+                          body: note_body
+                          tags:
+                            - note_tag1
+                            - note_tag2
+                          createdAt: note_createdAt
+                          updatedAt: note_updatedAt
+                        - id: note_id
+                          title: note_title
+                          body: note_body
+                          tags:
+                            - note_tag1
+                            - note_tag2
+                          createdAt: note_createdAt
+                          updatedAt: note_updatedAt
+                Empty notes:
+                  value:
+                    status: success
+                    data:
+                      notes:
+                        -
+        401:
+          description: User unauthorized response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+  /api/notes/{id}:
+    get:
+      description: Get specific note
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      note:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          title:
+                            type: string
+                          body:
+                            type: string
+                          tags:
+                            type: array
+                            items:
+                              type: string
+                          createdAt:
+                            type: string
+                          updatedAt:
+                            type: string
+              example:
+                status: success
+                data:
+                  note:
+                    id: note_id
+                    title: note_title
+                    createdAt: note_createdAt
+                    updatedAt: note_updatedAt
+                    tags:
+                      - note_tag1
+                      - note_tag2
+                    body: note_body
+        403:
+          description: Forbidden response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Anda tidak berhak mengakses resource ini
+        404:
+          description: Not found response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Catatan tidak ditemukan
+    put:
+      description: Update note
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                body:
+                  type: string
+      responses:
+        200:
+          description: Success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: 'Catatan berhasil diperbarui'
+        403:
+          description: Forbidden response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Anda tidak berhak mengakses resource ini
+        404:
+          description: Not found response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: fail
+                message: Gagal memperbarui catatan. Id catatan tidak ditemukan
+    delete:
+      description: delete note
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+          200:
+            description: Success response
+            headers:
+              Content-Type:
+                schema:
+                  type: string
+                  example: 'application/json; charset=utf-8'
+            content:
+              application/json:
+                example:
+                  status: success
+                  message: 'Catatan berhasil dihapus'
+          403:
+            description: Forbidden response
+            headers:
+              Content-Type:
+                schema:
+                  type: string
+                  example: 'application/json; charset=utf-8'
+            content:
+              application/json:
+                example:
+                  status: fail
+                  message: Anda tidak berhak mengakses resource ini
+          404:
+            description: Not found response
+            headers:
+              Content-Type:
+                schema:
+                  type: string
+                  example: 'application/json; charset=utf-8'
+            content:
+              application/json:
+                example:
+                  status: fail
+                  message: Catatan gagal dihapus. Id catatan tidak ditemukan

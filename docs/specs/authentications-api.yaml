@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Authentications API
+  description: Authentications API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+paths:
+  /api/authentications:
+    post:
+      description: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        201:
+          description: Login success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: Authentication berhasil ditambahkan
+                data:
+                  accessToken: access_token
+                  refreshToken: refresh_token
+        401:
+          description: Login failed response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              examples:
+                Wrong credentials:
+                  value:
+                    status: fail
+                    message: Kredensial yang Anda berikan salah
+    put:
+      description: Refresh access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        200:
+          description: Success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: Access Token berhasil diperbarui
+                data:
+                  accessToken: access_token
+        400:
+          description: Client error response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              examples:
+                Invalid refresh token:
+                  value:
+                    status: fail
+                    message: Refresh token tidak valid
+    delete:
+      description: Logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        200:
+          description: Logout success response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              example:
+                status: success
+                message: Refresh token berhasil dihapus
+        400:
+          description: Client error response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: 'application/json; charset=utf-8'
+          content:
+            application/json:
+              examples:
+                Invalid refresh token:
+                  value:
+                    status: fail
+                    message: Refresh token tidak valid
