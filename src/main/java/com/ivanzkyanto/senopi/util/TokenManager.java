@@ -1,6 +1,5 @@
 package com.ivanzkyanto.senopi.util;
 
-import com.ivanzkyanto.senopi.exception.InvalidRefreshTokenException;
 import com.ivanzkyanto.senopi.model.TokenPayload;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -10,53 +9,37 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Component
 public class TokenManager {
 
-    private final SecretKey ACCESS_TOKEN_KEY;
-    private final SecretKey REFRESH_TOKEN_KEY;
-
-    private final Long ACCESS_TOKEN_EXPIRATION = 5 * 60L; // 5 minutes
-
-    private final Long REFRESH_TOKEN_EXPIRATION = 10 * 24 * 60 * 60L; // 10 days
-
-    public TokenManager() {
-        ACCESS_TOKEN_KEY = Jwts.SIG.HS256.key().build();
-        REFRESH_TOKEN_KEY = Jwts.SIG.HS256.key().build();
-    }
-
-    public String generateAccessToken(TokenPayload payload) {
+    public static String generateToken(TokenPayload payload, SecretKey secretKey, Long expiration) {
         return Jwts.builder()
-                .signWith(ACCESS_TOKEN_KEY)
+                .signWith(secretKey)
                 .id(UUID.randomUUID().toString())
                 .subject(payload.userId())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * ACCESS_TOKEN_EXPIRATION))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * expiration))
                 .compact();
     }
 
-    public String generateRefreshToken(TokenPayload payload) {
-        return Jwts.builder()
-                .signWith(REFRESH_TOKEN_KEY)
-                .id(UUID.randomUUID().toString())
-                .subject(payload.userId())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * REFRESH_TOKEN_EXPIRATION))
-                .compact();
-    }
-
-    public TokenPayload verifyRefreshToken(String refreshToken) {
+    public static <X extends Throwable> TokenPayload verifyToken(String token, SecretKey secretKey, Supplier<? extends X> exceptionSupplier) throws X {
         try {
             Jws<Claims> jws = Jwts.parser()
-                    .verifyWith(REFRESH_TOKEN_KEY)
+                    .verifyWith(secretKey)
                     .build()
-                    .parseSignedClaims(refreshToken);
+                    .parseSignedClaims(token);
 
             return new TokenPayload(jws.getPayload().getSubject());
-        } catch (JwtException e) {
-            throw new InvalidRefreshTokenException();
+        } catch (JwtException jwtException) {
+            if (!Objects.isNull(exceptionSupplier.get())) {
+                throw exceptionSupplier.get();
+            }
+
+            throw jwtException;
         }
     }
 

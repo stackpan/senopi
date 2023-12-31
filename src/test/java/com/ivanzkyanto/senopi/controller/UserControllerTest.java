@@ -70,7 +70,7 @@ class UserControllerTest {
                 """;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/users")
+                MockMvcRequestBuilders.post("/users")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -98,7 +98,7 @@ class UserControllerTest {
                 """;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/users")
+                MockMvcRequestBuilders.post("/users")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -121,7 +121,7 @@ class UserControllerTest {
         }
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/users?username=fizz")
+                MockMvcRequestBuilders.get("/users?username=fizz")
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
@@ -140,7 +140,7 @@ class UserControllerTest {
         userRepository.save(user);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/users/" + user.getId())
+                MockMvcRequestBuilders.get("/users/" + user.getId())
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
@@ -154,7 +154,7 @@ class UserControllerTest {
     @Test
     void getNotFound() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/users/fictional-id")
+                MockMvcRequestBuilders.get("/users/fictional-id")
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isNotFound(),

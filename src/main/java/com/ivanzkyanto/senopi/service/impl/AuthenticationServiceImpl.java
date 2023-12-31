@@ -10,9 +10,9 @@ import com.ivanzkyanto.senopi.model.response.LoginResponse;
 import com.ivanzkyanto.senopi.repository.AuthenticationRepository;
 import com.ivanzkyanto.senopi.repository.UserRepository;
 import com.ivanzkyanto.senopi.security.BCrypt;
-import com.ivanzkyanto.senopi.service.AuthService;
+import com.ivanzkyanto.senopi.service.AuthenticationService;
+import com.ivanzkyanto.senopi.service.TokenService;
 import com.ivanzkyanto.senopi.service.ValidationService;
-import com.ivanzkyanto.senopi.util.TokenManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     @NonNull
     private UserRepository userRepository;
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private AuthenticationRepository authenticationRepository;
 
     @NonNull
-    private TokenManager tokenManager;
+    private TokenService tokenService;
 
     private final ResponseStatusException INVALID_CREDENTIALS_EXCEPTION = new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Kredensial yang anda berikan salah");
 
@@ -52,8 +52,8 @@ public class AuthServiceImpl implements AuthService {
 
         TokenPayload tokenPayload = new TokenPayload(user.getId().toString());
 
-        String accessToken = tokenManager.generateAccessToken(tokenPayload);
-        String refreshToken = tokenManager.generateRefreshToken(tokenPayload);
+        String accessToken = tokenService.generateAccessToken(tokenPayload);
+        String refreshToken = tokenService.generateRefreshToken(tokenPayload);
 
         Authentication authentication = new Authentication(refreshToken);
         authenticationRepository.save(authentication);
@@ -69,9 +69,9 @@ public class AuthServiceImpl implements AuthService {
         validationService.validatePayload(request);
 
         if (!authenticationRepository.existsById(request.refreshToken())) throw new InvalidRefreshTokenException();
-        TokenPayload tokenPayload = tokenManager.verifyRefreshToken(request.refreshToken());
+        TokenPayload tokenPayload = tokenService.verifyRefreshToken(request.refreshToken());
 
-        return tokenManager.generateAccessToken(tokenPayload);
+        return tokenService.generateAccessToken(tokenPayload);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.ivanzkyanto.senopi.controller;
 
+import com.ivanzkyanto.senopi.annotation.Authenticated;
+import com.ivanzkyanto.senopi.entity.User;
 import com.ivanzkyanto.senopi.model.request.CreateNoteRequest;
 import com.ivanzkyanto.senopi.model.request.UpdateNoteRequest;
 import com.ivanzkyanto.senopi.model.response.ApiResponse;
@@ -7,6 +9,7 @@ import com.ivanzkyanto.senopi.model.response.NoteResponse;
 import com.ivanzkyanto.senopi.service.NoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +18,16 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class NoteController {
 
     @NonNull
     private NoteService noteService;
 
-    @PostMapping("/api/notes")
+    @PostMapping("/notes")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<Map<String, String>> create(@RequestBody CreateNoteRequest request) {
-        String noteId = noteService.create(request);
+    public ApiResponse<Map<String, String>> create(@Authenticated User user, @RequestBody CreateNoteRequest request) {
+        String noteId = noteService.create(user, request);
         return ApiResponse.<Map<String, String>>builder()
                 .status("success")
                 .message("Catatan berhasil ditambahkan")
@@ -31,36 +35,36 @@ public class NoteController {
                 .build();
     }
 
-    @GetMapping("/api/notes")
-    public ApiResponse<Map<String, List<NoteResponse>>> getAll() {
-        List<NoteResponse> notes = noteService.getAll();
+    @GetMapping("/notes")
+    public ApiResponse<Map<String, List<NoteResponse>>> getAll(@Authenticated User user) {
+        List<NoteResponse> notes = noteService.getAll(user);
         return ApiResponse.<Map<String, List<NoteResponse>>>builder()
                 .status("success")
                 .data(Map.of("notes", notes))
                 .build();
     }
 
-    @GetMapping("/api/notes/{noteId}")
-    public ApiResponse<Map<String, NoteResponse>> get(@PathVariable String noteId) {
-        NoteResponse note = noteService.get(noteId);
+    @GetMapping("/notes/{noteId}")
+    public ApiResponse<Map<String, NoteResponse>> get(@Authenticated User user, @PathVariable String noteId) {
+        NoteResponse note = noteService.get(user, noteId);
         return ApiResponse.<Map<String, NoteResponse>>builder()
                 .status("success")
                 .data(Map.of("note", note))
                 .build();
     }
 
-    @PutMapping("/api/notes/{noteId}")
-    public ApiResponse<Void> update(@PathVariable String noteId, @RequestBody UpdateNoteRequest request) {
-        noteService.update(noteId, request);
+    @PutMapping("/notes/{noteId}")
+    public ApiResponse<Void> update(@Authenticated User user, @PathVariable String noteId, @RequestBody UpdateNoteRequest request) {
+        noteService.update(user, noteId, request);
         return ApiResponse.<Void>builder()
                 .status("success")
                 .message("Catatan berhasil diperbarui")
                 .build();
     }
 
-    @DeleteMapping("/api/notes/{noteId}")
-    public ApiResponse<Void> delete(@PathVariable String noteId) {
-        noteService.delete(noteId);
+    @DeleteMapping("/notes/{noteId}")
+    public ApiResponse<Void> delete(@Authenticated User user, @PathVariable String noteId) {
+        noteService.delete(user, noteId);
         return ApiResponse.<Void>builder()
                 .status("success")
                 .message("Catatan berhasil dihapus")

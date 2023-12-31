@@ -33,6 +33,10 @@ public class Note {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "owner", referencedColumnName = "id")
+    private User owner;
+
     public List<String> getMappedTags() {
         return tags.stream()
                 .map(Tag::getBody)

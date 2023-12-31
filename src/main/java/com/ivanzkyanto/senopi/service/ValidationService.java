@@ -11,6 +11,6 @@ public interface ValidationService {
 
     UUID validateUuid(String uuid);
 
-    <X extends Throwable>  UUID validateUuid(String uuid, Supplier<? extends X> exceptionSupplier) throws X;
+    <X extends Throwable> UUID validateUuid(String uuid, Supplier<? extends X> exceptionSupplier) throws X;
 
 }

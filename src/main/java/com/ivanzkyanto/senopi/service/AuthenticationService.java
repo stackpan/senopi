@@ -4,7 +4,7 @@ import com.ivanzkyanto.senopi.model.request.LoginRequest;
 import com.ivanzkyanto.senopi.model.request.RefreshTokenRequest;
 import com.ivanzkyanto.senopi.model.response.LoginResponse;
 
-public interface AuthService {
+public interface AuthenticationService {
 
     LoginResponse login(LoginRequest request);
 

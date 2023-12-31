@@ -72,7 +72,7 @@ class AuthenticationControllerTest {
                 """;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/authentications")
+                MockMvcRequestBuilders.post("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -101,7 +101,7 @@ class AuthenticationControllerTest {
                 """;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/authentications")
+                MockMvcRequestBuilders.post("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -122,7 +122,7 @@ class AuthenticationControllerTest {
                 """;
 
         MvcResult loginMvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/authentications")
+                MockMvcRequestBuilders.post("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(loginRequest)
@@ -138,7 +138,7 @@ class AuthenticationControllerTest {
                 """, loginResponse.getData().getRefreshToken());
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/authentications")
+                MockMvcRequestBuilders.put("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(refreshRequest)
@@ -164,7 +164,7 @@ class AuthenticationControllerTest {
                 """;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/authentications")
+                MockMvcRequestBuilders.put("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -185,7 +185,7 @@ class AuthenticationControllerTest {
                 """;
 
         MvcResult loginMvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/authentications")
+                MockMvcRequestBuilders.post("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(loginRequest)
@@ -201,7 +201,7 @@ class AuthenticationControllerTest {
                 """, loginResponse.getData().getRefreshToken());
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/api/authentications")
+                MockMvcRequestBuilders.delete("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(logoutRequest)
@@ -223,7 +223,7 @@ class AuthenticationControllerTest {
                 """;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/api/authentications")
+                MockMvcRequestBuilders.delete("/authentications")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -231,6 +231,18 @@ class AuthenticationControllerTest {
                 MockMvcResultMatchers.status().isBadRequest(),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Refresh token tidak valid")
+        );
+    }
+
+    @Test
+    void authorization() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/notes")
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                MockMvcResultMatchers.status().isUnauthorized(),
+                MockMvcResultMatchers.jsonPath("status").value("fail"),
+                MockMvcResultMatchers.jsonPath("message").value("Anda tidak berhak mengakses resource ini")
         );
     }
 }

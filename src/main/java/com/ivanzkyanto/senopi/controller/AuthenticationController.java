@@ -4,7 +4,7 @@ import com.ivanzkyanto.senopi.model.request.LoginRequest;
 import com.ivanzkyanto.senopi.model.request.RefreshTokenRequest;
 import com.ivanzkyanto.senopi.model.response.ApiResponse;
 import com.ivanzkyanto.senopi.model.response.LoginResponse;
-import com.ivanzkyanto.senopi.service.AuthService;
+import com.ivanzkyanto.senopi.service.AuthenticationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +17,12 @@ import java.util.Map;
 public class AuthenticationController {
 
     @NonNull
-    AuthService authService;
+    AuthenticationService authenticationService;
 
-    @PostMapping("/api/authentications")
+    @PostMapping("/authentications")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse loginResponse = authService.login(request);
+        LoginResponse loginResponse = authenticationService.login(request);
         return ApiResponse.<LoginResponse>builder()
                 .status("success")
                 .message("Authentication berhasil ditambahkan")
@@ -30,9 +30,9 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PutMapping("/api/authentications")
+    @PutMapping("/authentications")
     public ApiResponse<Map<String, String>> refresh(@RequestBody RefreshTokenRequest request) {
-        String accessToken = authService.refresh(request);
+        String accessToken = authenticationService.refresh(request);
         return ApiResponse.<Map<String, String>>builder()
                 .status("success")
                 .message("Access Token berhasil diperbarui")
@@ -40,9 +40,9 @@ public class AuthenticationController {
                 .build();
     }
 
-    @DeleteMapping("/api/authentications")
+    @DeleteMapping("/authentications")
     public ApiResponse<Void> logout(@RequestBody RefreshTokenRequest request) {
-        authService.logout(request);
+        authenticationService.logout(request);
         return ApiResponse.<Void>builder()
                 .status("success")
                 .message("Refresh token berhasil dihapus")

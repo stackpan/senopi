@@ -3,6 +3,7 @@ package com.ivanzkyanto.senopi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,5 +23,8 @@ public class User {
     private String password;
 
     private String fullname;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Note> notes;
 
 }
