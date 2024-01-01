@@ -9,6 +9,7 @@ import com.ivanzkyanto.senopi.service.UserService;
 import com.ivanzkyanto.senopi.service.ValidationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +38,12 @@ public class UserServiceImpl implements UserService
 
         User user = User.builder()
                 .username(request.username())
-                .password(BCrypt.hashpw(request.password(), BCrypt.gensalt()))
-                .fullname(request.fullname())
                 .build();
+
+        if (userRepository.exists(Example.of(user))) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Gagal menambahkan user. Username sudah digunakan.");
+
+        user.setPassword(BCrypt.hashpw(request.password(), BCrypt.gensalt()));
+        user.setFullname(request.fullname());
 
         userRepository.save(user);
 
