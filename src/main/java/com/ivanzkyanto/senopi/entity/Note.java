@@ -37,6 +37,9 @@ public class Note {
     @JoinColumn(name = "owner", referencedColumnName = "id")
     private User owner;
 
+    @OneToMany(mappedBy = "note")
+    private List<Collaboration> collaborators;
+
     public List<String> getMappedTags() {
         return tags.stream()
                 .map(Tag::getBody)

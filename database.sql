@@ -16,7 +16,7 @@ CREATE TABLE authentications
 CREATE TABLE notes
 (
     id         UUID         NOT NULL PRIMARY KEY,
-    title      varchar(100) NOT NULL,
+    title      VARCHAR(100) NOT NULL,
     body       TEXT         NOT NULL,
     created_at TIMESTAMP    NOT NULL,
     updated_at TIMESTAMP    NOT NULL,
@@ -31,3 +31,12 @@ CREATE TABLE tags
 );
 
 CREATE UNIQUE INDEX unique_tags_body_notes_id ON tags (body, notes_id);
+
+CREATE TABLE collaborations
+(
+    id      UUID NOT NULL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    note_id UUID NOT NULL REFERENCES notes (id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX unique_collaborations_user_id_note_id ON collaborations (user_id, note_id);

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,5 +27,8 @@ public class User {
 
     @OneToMany(mappedBy = "owner")
     private List<Note> notes;
+
+    @OneToMany(mappedBy = "user")
+    private List<Collaboration> collaborations;
 
 }
