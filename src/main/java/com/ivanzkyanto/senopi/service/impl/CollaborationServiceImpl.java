@@ -61,6 +61,7 @@ public class CollaborationServiceImpl implements CollaborationService {
     }
 
     @Override
+    @Transactional
     public void delete(User user, CollaborationRequest request) {
         validationService.validatePayload(request);
         validationService.validateUuid(request.userId());

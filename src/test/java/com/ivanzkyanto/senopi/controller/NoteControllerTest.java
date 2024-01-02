@@ -2,16 +2,14 @@ package com.ivanzkyanto.senopi.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ivanzkyanto.senopi.entity.Collaboration;
 import com.ivanzkyanto.senopi.entity.Note;
 import com.ivanzkyanto.senopi.entity.Tag;
 import com.ivanzkyanto.senopi.entity.User;
 import com.ivanzkyanto.senopi.model.response.ApiResponse;
 import com.ivanzkyanto.senopi.model.response.LoginResponse;
 import com.ivanzkyanto.senopi.model.response.NoteResponse;
-import com.ivanzkyanto.senopi.repository.AuthenticationRepository;
-import com.ivanzkyanto.senopi.repository.NoteRepository;
-import com.ivanzkyanto.senopi.repository.TagRepository;
-import com.ivanzkyanto.senopi.repository.UserRepository;
+import com.ivanzkyanto.senopi.repository.*;
 import com.ivanzkyanto.senopi.security.BCrypt;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -52,6 +50,9 @@ class NoteControllerTest {
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
+    @Autowired
+    private CollaborationRepository collaborationRepository;
+
     private String token;
 
     private User user;
@@ -60,6 +61,7 @@ class NoteControllerTest {
         userRepository.deleteAll();
         tagRepository.deleteAll();
         noteRepository.deleteAll();
+        collaborationRepository.deleteAll();
         authenticationRepository.deleteAll();
     }
 
@@ -197,6 +199,79 @@ class NoteControllerTest {
     }
 
     @Test
+    void getAllAsCollaborator() throws Exception {
+        Note userNote = Note.builder()
+                .title("Catatan Milik User")
+                .body("Ini adalah catatan milik user")
+                .owner(user)
+                .build();
+
+        noteRepository.save(userNote);
+
+        User collaborator = User.builder()
+                .username("collaborator")
+                .password(BCrypt.hashpw("password", BCrypt.gensalt()))
+                .fullname("Collaborator")
+                .build();
+
+        userRepository.save(collaborator);
+
+        Note collaboratorNote = Note.builder()
+                .title("Catatan Milik Collaborator")
+                .body("Ini adalah catatan milik collaborator")
+                .owner(collaborator)
+                .build();
+
+        noteRepository.save(collaboratorNote);
+
+        Collaboration collaboration = Collaboration.builder()
+                .user(collaborator)
+                .note(userNote)
+                .build();
+
+        collaborationRepository.save(collaboration);
+
+        String json = """
+                {
+                    "username": "collaborator",
+                    "password": "password"
+                }
+                """;
+
+        MvcResult loginMvcResult = mockMvc.perform(
+                MockMvcRequestBuilders.post("/authentications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json)
+        ).andReturn();
+
+        ApiResponse<LoginResponse> loginResponse = objectMapper.readValue(loginMvcResult.getResponse().getContentAsString(), new TypeReference<>() {
+        });
+
+        String collaboratorToken = loginResponse.getData().getAccessToken();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/notes")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", String.format("Bearer %s", collaboratorToken))
+        ).andExpectAll(
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.jsonPath("status").value("success"),
+                MockMvcResultMatchers.jsonPath("data.notes").exists()
+        ).andDo(result -> {
+            ApiResponse<Map<String, List<NoteResponse>>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            Assertions.assertNotNull(response.getData());
+
+            List<NoteResponse> notes = response.getData().get("notes");
+            Assertions.assertNotNull(notes);
+            Assertions.assertEquals(2, notes.size());
+        });
+    }
+
+    @Test
     void getSuccess() throws Exception {
         Note note = Note.builder()
                 .title("Catatan ")
@@ -245,6 +320,62 @@ class NoteControllerTest {
                 MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan tidak ditemukan")
+        );
+    }
+
+    @Test
+    void getAsCollaborator() throws Exception {
+        Note note = Note.builder()
+                .title("Catatan ")
+                .body("Ini adalah catatan ")
+                .owner(user)
+                .build();
+
+        noteRepository.save(note);
+
+        User collaborator = User.builder()
+                .username("collaborator")
+                .password(BCrypt.hashpw("password", BCrypt.gensalt()))
+                .fullname("Collaborator")
+                .build();
+
+        userRepository.save(collaborator);
+
+        Collaboration collaboration = Collaboration.builder()
+                .user(collaborator)
+                .note(note)
+                .build();
+
+        collaborationRepository.save(collaboration);
+
+        String json = """
+                {
+                    "username": "collaborator",
+                    "password": "password"
+                }
+                """;
+
+        MvcResult loginMvcResult = mockMvc.perform(
+                MockMvcRequestBuilders.post("/authentications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json)
+        ).andReturn();
+
+        ApiResponse<LoginResponse> loginResponse = objectMapper.readValue(loginMvcResult.getResponse().getContentAsString(), new TypeReference<>() {
+        });
+
+        String collaboratorToken = loginResponse.getData().getAccessToken();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/notes/" + note.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", String.format("Bearer %s", collaboratorToken))
+        ).andExpectAll(
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.jsonPath("status").value("success"),
+                MockMvcResultMatchers.jsonPath("data.note").exists()
         );
     }
 
@@ -364,7 +495,7 @@ class NoteControllerTest {
     }
 
     @Test
-    void authenticatedResolver() throws Exception {
+    void getAsUnauthorizedUser() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/notes")
                         .accept(MediaType.APPLICATION_JSON)

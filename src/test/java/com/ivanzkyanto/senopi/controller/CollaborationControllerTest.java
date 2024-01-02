@@ -181,7 +181,7 @@ class CollaborationControllerTest {
                 MockMvcResultMatchers.status().isForbidden(),
                 MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
-                MockMvcResultMatchers.jsonPath("message").value("Anda tidak berhak mengakses resource ini")
+                MockMvcResultMatchers.jsonPath("message4").value("Anda tidak berhak mengakses resource ini")
         );
     }
 

@@ -6,6 +6,7 @@ import com.ivanzkyanto.senopi.entity.User;
 import com.ivanzkyanto.senopi.model.request.CreateNoteRequest;
 import com.ivanzkyanto.senopi.model.request.UpdateNoteRequest;
 import com.ivanzkyanto.senopi.model.response.NoteResponse;
+import com.ivanzkyanto.senopi.repository.CollaborationRepository;
 import com.ivanzkyanto.senopi.repository.NoteRepository;
 import com.ivanzkyanto.senopi.repository.TagRepository;
 import com.ivanzkyanto.senopi.service.NoteService;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,9 @@ public class NoteServiceImpl implements NoteService {
 
     @NonNull
     public TagRepository tagRepository;
+
+    @NonNull
+    public CollaborationRepository collaborationRepository;
 
     private final ResponseStatusException NOTE_NOT_FOUND_EXCEPTION = new ResponseStatusException(HttpStatus.NOT_FOUND, "Catatan tidak ditemukan");
     private final ResponseStatusException NOTE_FORBIDDEN_EXCEPTION = new ResponseStatusException(HttpStatus.FORBIDDEN, "Anda tidak berhak mengakses resource ini");
@@ -62,17 +67,20 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<NoteResponse> getAll(User user) {
-        List<Note> notes = noteRepository.findAllByOwner(user);
+        Stream<Note> ownedNotes = noteRepository.findAllByOwner(user);
+        Stream<Note> collaborationNotes = noteRepository.findAllByCollaborators_User(user);
 
-        return notes.stream().map(NoteResponse::buildFrom).toList();
+        return Stream.concat(ownedNotes, collaborationNotes)
+                .map(NoteResponse::buildFrom).toList();
     }
 
     @Override
     public NoteResponse get(User user, String noteId) {
         UUID uuid = validationService.validateUuid(noteId, () -> NOTE_NOT_FOUND_EXCEPTION);
         Note note = noteRepository.findById(uuid).orElseThrow(() -> NOTE_NOT_FOUND_EXCEPTION);
-        if (!note.getOwner().getId().equals(user.getId())) throw NOTE_FORBIDDEN_EXCEPTION;
+        if (!checkIsOwner(user, note) && !checkIsCollaborator(user, note)) throw NOTE_FORBIDDEN_EXCEPTION;
 
         return NoteResponse.buildFrom(note);
     }
@@ -84,7 +92,7 @@ public class NoteServiceImpl implements NoteService {
         validationService.validatePayload(request);
 
         Note note = noteRepository.findById(uuid).orElseThrow(() -> NOTE_NOT_FOUND_EXCEPTION);
-        if (!note.getOwner().getId().equals(user.getId())) throw NOTE_FORBIDDEN_EXCEPTION;
+        if (!checkIsOwner(user, note) && !checkIsCollaborator(user, note)) throw NOTE_FORBIDDEN_EXCEPTION;
 
         note.setTitle(request.title());
         note.setBody(request.body());
@@ -102,8 +110,16 @@ public class NoteServiceImpl implements NoteService {
     public void delete(User user, String noteId) {
         UUID uuid = validationService.validateUuid(noteId, () -> NOTE_NOT_FOUND_EXCEPTION);
         Note note = noteRepository.findById(uuid).orElseThrow(() -> NOTE_NOT_FOUND_EXCEPTION);
-        if (!note.getOwner().getId().equals(user.getId())) throw NOTE_FORBIDDEN_EXCEPTION;
+        if (!checkIsOwner(user, note)) throw NOTE_FORBIDDEN_EXCEPTION;
 
         noteRepository.delete(note);
+    }
+
+    private boolean checkIsOwner(User user, Note note) {
+        return note.getOwner().getId().equals(user.getId());
+    }
+
+    private boolean checkIsCollaborator(User user, Note note) {
+        return collaborationRepository.existsByUserAndNote(user, note);
     }
 }
