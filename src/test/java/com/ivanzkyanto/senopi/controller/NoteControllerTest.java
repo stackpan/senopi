@@ -139,7 +139,7 @@ class NoteControllerTest {
     void createWithBadPayload() throws Exception {
         String json = """
                 {
-                    "body": "Ini adalah contoh catatan",
+                    "body": true,
                     "tags": ["sample", "contoh", "dummy"]
                 }
                 """;
@@ -153,7 +153,8 @@ class NoteControllerTest {
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
                 MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
-                MockMvcResultMatchers.jsonPath("status").value("fail")
+                MockMvcResultMatchers.jsonPath("status").value("fail"),
+                MockMvcResultMatchers.jsonPath("message").exists()
         );
     }
 
@@ -296,17 +297,15 @@ class NoteControllerTest {
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
-                MockMvcResultMatchers.jsonPath("status").value("success")
-        ).andDo(result -> {
-            ApiResponse<Map<String, NoteResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
-            });
-
-            Assertions.assertNotNull(response.getData());
-
-            NoteResponse noteResponse = response.getData().get("note");
-            Assertions.assertNotNull(noteResponse);
-            Assertions.assertEquals(note.getId().toString(), noteResponse.getId());
-        });
+                MockMvcResultMatchers.jsonPath("status").value("success"),
+                MockMvcResultMatchers.jsonPath("data.note").exists(),
+                MockMvcResultMatchers.jsonPath("data.note.id").value(note.getId().toString()),
+                MockMvcResultMatchers.jsonPath("data.note.title").exists(),
+                MockMvcResultMatchers.jsonPath("data.note.body").exists(),
+                MockMvcResultMatchers.jsonPath("data.note.tags").exists(),
+                MockMvcResultMatchers.jsonPath("data.note.tags").isNotEmpty(),
+                MockMvcResultMatchers.jsonPath("data.note.username").value(user.getUsername())
+        );
     }
 
     @Test
@@ -422,6 +421,45 @@ class NoteControllerTest {
 
         assert updatedNote != null;
         Assertions.assertNotEquals(note.getBody(), updatedNote.getBody());
+    }
+
+    @Test
+    void updateBadPayload() throws Exception {
+        Note note = Note.builder()
+                .title("Catatan ")
+                .body("Ini adalah catatan ")
+                .owner(user)
+                .build();
+
+        noteRepository.save(note);
+        for (int i = 1; i <= 3; i++) {
+            Tag tag = Tag.builder()
+                    .note(note)
+                    .body("tag-" + i)
+                    .build();
+
+            tagRepository.save(tag);
+        }
+
+        String json = """
+                {
+                    "title": "Catatan",
+                    "body": true
+                }
+                """;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/notes/" + note.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", String.format("Bearer %s", token))
+                        .content(json)
+        ).andExpectAll(
+                MockMvcResultMatchers.status().isBadRequest(),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                MockMvcResultMatchers.jsonPath("status").value("fail"),
+                MockMvcResultMatchers.jsonPath("message").exists()
+        );
     }
 
     @Test

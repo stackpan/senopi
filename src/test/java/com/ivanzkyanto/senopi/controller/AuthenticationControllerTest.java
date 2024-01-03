@@ -110,7 +110,7 @@ class AuthenticationControllerTest {
                 MockMvcResultMatchers.status().isUnauthorized(),
                 MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
-                MockMvcResultMatchers.jsonPath("message").value("Kredensial yang anda berikan salah")
+                MockMvcResultMatchers.jsonPath("message").value("Kredensial yang Anda berikan salah")
         );
     }
 

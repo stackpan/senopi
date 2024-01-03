@@ -36,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @NonNull
     private TokenService tokenService;
 
-    private final ResponseStatusException INVALID_CREDENTIALS_EXCEPTION = new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Kredensial yang anda berikan salah");
+    private final ResponseStatusException INVALID_CREDENTIALS_EXCEPTION = new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Kredensial yang Anda berikan salah");
 
     @Override
     @Transactional

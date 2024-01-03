@@ -5,7 +5,7 @@ Accept: application/json
 {
   "username": "user",
   "password": "password",
-  "fullname": "User"
+  "fullname": 0
 }
 
 ###

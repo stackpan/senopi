@@ -90,6 +90,29 @@ class UserControllerTest {
     }
 
     @Test
+    void registerBadPayload() throws Exception {
+        String json = """
+                {
+                    "username": "johndoe",
+                    "password": "password",
+                    "fullname": 0
+                }
+                """;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/users")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        ).andExpectAll(
+                MockMvcResultMatchers.status().isBadRequest(),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                MockMvcResultMatchers.jsonPath("status").value("fail"),
+                MockMvcResultMatchers.jsonPath("message").exists()
+        );
+    }
+
+    @Test
     void registerAlreadyExistedUsername() throws Exception {
         User user = User.builder()
                 .username("johndoe")
