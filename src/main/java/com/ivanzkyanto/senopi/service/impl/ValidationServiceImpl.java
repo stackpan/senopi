@@ -7,8 +7,13 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -19,6 +24,9 @@ public class ValidationServiceImpl implements ValidationService {
 
     @NonNull
     private Validator validator;
+
+    @NonNull
+    private Tika tika;
 
     @Override
     public void validatePayload(Request request) {
@@ -43,6 +51,24 @@ public class ValidationServiceImpl implements ValidationService {
                 throw exceptionSupplier.get();
             }
             throw e;
+        }
+    }
+
+    @Override
+    public void validateMultipartContentType(MultipartFile multipartFile, String... contentTypes) {
+        try {
+            String multipartFileContentType = tika.detect(multipartFile.getInputStream());
+
+            assert multipartFileContentType != null;
+            for (String contentType: contentTypes) {
+                if (multipartFileContentType.equals(contentType)) {
+                    return;
+                }
+            }
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File content type is not supported");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

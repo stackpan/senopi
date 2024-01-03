@@ -1,1 +1,27 @@
-GET http://localhost:8080/api/notes
+POST http://localhost:5000/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "user",
+  "password": "password",
+  "fullname": "User"
+}
+
+###
+POST http://localhost:5000/upload/images
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="data"; filename="image.png"
+
+< ./image.png
+
+###
+POST http://localhost:5000/upload/images
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="data"; filename="help.md"
+
+< ./HELP.md
