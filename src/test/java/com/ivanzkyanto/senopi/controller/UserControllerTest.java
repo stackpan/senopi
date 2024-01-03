@@ -76,7 +76,7 @@ class UserControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isCreated(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("User berhasil ditambahkan"),
                 MockMvcResultMatchers.jsonPath("data.userId").exists()
@@ -114,7 +114,7 @@ class UserControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Gagal menambahkan user. Username sudah digunakan.")
         );
@@ -136,7 +136,7 @@ class UserControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value(Matchers.containsString("username"))
         );
@@ -158,7 +158,7 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("data.users").isNotEmpty()
         );
@@ -178,7 +178,7 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("data.user").exists(),
                 MockMvcResultMatchers.jsonPath("data.user.id").value(user.getId().toString()),
@@ -193,7 +193,7 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isNotFound(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("User tidak ditemukan")
         );

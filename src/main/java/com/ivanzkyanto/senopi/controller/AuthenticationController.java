@@ -20,7 +20,7 @@ public class AuthenticationController {
     @NonNull
     AuthenticationService authenticationService;
 
-    @PostMapping(path = "/authentications", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/authentications", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {
         LoginResponse loginResponse = authenticationService.login(request);
@@ -31,7 +31,7 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PutMapping(path = "/authentications", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(path = "/authentications", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Map<String, String>> refresh(@RequestBody RefreshTokenRequest request) {
         String accessToken = authenticationService.refresh(request);
         return ApiResponse.<Map<String, String>>builder()
@@ -41,7 +41,7 @@ public class AuthenticationController {
                 .build();
     }
 
-    @DeleteMapping(path = "/authentications", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(path = "/authentications", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Void> logout(@RequestBody RefreshTokenRequest request) {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder()

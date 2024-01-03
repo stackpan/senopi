@@ -120,7 +120,7 @@ class NoteControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isCreated(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan berhasil ditambahkan")
         ).andDo(result -> {
@@ -152,7 +152,7 @@ class NoteControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail")
         );
     }
@@ -183,7 +183,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", token))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success")
         ).andDo(result -> {
             ApiResponse<Map<String, List<NoteResponse>>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -256,7 +256,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", collaboratorToken))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("data.notes").exists()
         ).andDo(result -> {
@@ -295,7 +295,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", token))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success")
         ).andDo(result -> {
             ApiResponse<Map<String, NoteResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -317,7 +317,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", token))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isNotFound(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan tidak ditemukan")
         );
@@ -373,7 +373,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", collaboratorToken))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("data.note").exists()
         );
@@ -413,7 +413,7 @@ class NoteControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan berhasil diperbarui")
         );
@@ -442,7 +442,7 @@ class NoteControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isNotFound(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan tidak ditemukan")
         );
@@ -472,7 +472,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", token))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan berhasil dihapus")
         );
@@ -488,7 +488,7 @@ class NoteControllerTest {
                         .header("Authorization", String.format("Bearer %s", token))
         ).andExpectAll(
                 MockMvcResultMatchers.status().isNotFound(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Catatan tidak ditemukan")
         );
@@ -501,7 +501,7 @@ class NoteControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isUnauthorized(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Anda tidak berhak mengakses resource ini")
         );

@@ -20,7 +20,7 @@ public class CollaborationController {
     @NonNull
     private CollaborationService collaborationService;
 
-    @PostMapping(path = "/collaborations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/collaborations", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<Map<String, String>> add(@Authenticated User user, @RequestBody CollaborationRequest request) {
         String collaborationId = collaborationService.add(user, request);
@@ -30,7 +30,7 @@ public class CollaborationController {
                 .build();
     }
 
-    @DeleteMapping(path = "/collaborations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(path = "/collaborations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Void> delete(@Authenticated User user, @RequestBody CollaborationRequest request) {
         collaborationService.delete(user, request);
         return ApiResponse.<Void>builder()

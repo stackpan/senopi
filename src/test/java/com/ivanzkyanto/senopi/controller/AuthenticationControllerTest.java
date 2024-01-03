@@ -78,7 +78,7 @@ class AuthenticationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isCreated(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Authentication berhasil ditambahkan"),
                 MockMvcResultMatchers.jsonPath("data").exists(),
@@ -108,7 +108,7 @@ class AuthenticationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isUnauthorized(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Kredensial yang anda berikan salah")
         );
@@ -146,7 +146,7 @@ class AuthenticationControllerTest {
                         .content(refreshRequest)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Access Token berhasil diperbarui"),
                 MockMvcResultMatchers.jsonPath("data.accessToken").exists()
@@ -173,7 +173,7 @@ class AuthenticationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Refresh token tidak valid")
         );
@@ -211,7 +211,7 @@ class AuthenticationControllerTest {
                         .content(logoutRequest)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Refresh token berhasil dihapus")
         );
@@ -234,7 +234,7 @@ class AuthenticationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Refresh token tidak valid")
         );
@@ -247,7 +247,7 @@ class AuthenticationControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isUnauthorized(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Anda tidak berhak mengakses resource ini")
         );

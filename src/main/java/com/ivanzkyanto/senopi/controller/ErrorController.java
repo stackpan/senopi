@@ -17,7 +17,7 @@ public class ErrorController {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResponse<Void>> handleConstraintViolationException(ConstraintViolationException e) {
         return ResponseEntity.badRequest()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(ApiResponse.<Void>builder()
                         .status("fail")
                         .message(e.getMessage())
@@ -27,7 +27,7 @@ public class ErrorController {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiResponse<Void>> handleResponseStatusException(ResponseStatusException e) {
         return ResponseEntity.status(e.getStatusCode())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(ApiResponse.<Void>builder()
                         .status("fail")
                         .message(e.getReason())

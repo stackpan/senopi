@@ -133,7 +133,7 @@ class CollaborationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isCreated(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("data.collaborationId").exists()
         ).andDo(result -> {
@@ -179,7 +179,7 @@ class CollaborationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isForbidden(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message4").value("Anda tidak berhak mengakses resource ini")
         );
@@ -202,7 +202,7 @@ class CollaborationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isBadRequest(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Gagal menambahkan karena user adalah pemilik catatan")
         );
@@ -240,7 +240,7 @@ class CollaborationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("success"),
                 MockMvcResultMatchers.jsonPath("message").value("Kolaborasi berhasil dihapus")
         );
@@ -273,7 +273,7 @@ class CollaborationControllerTest {
                         .content(json)
         ).andExpectAll(
                 MockMvcResultMatchers.status().isNotFound(),
-                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
                 MockMvcResultMatchers.jsonPath("status").value("fail"),
                 MockMvcResultMatchers.jsonPath("message").value("Kolaborasi tidak ditemukan")
         );

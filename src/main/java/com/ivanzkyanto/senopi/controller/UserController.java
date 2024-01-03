@@ -20,7 +20,7 @@ public class UserController {
     @NonNull
     private UserService userService;
 
-    @PostMapping(path = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<Map<String, String>> register(@RequestBody RegisterUserRequest request) {
         String userId = userService.register(request);
@@ -31,7 +31,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Map<String, List<UserResponse>>> search(@RequestParam("username") String username) {
         List<UserResponse> matches = userService.search(username);
         return ApiResponse.<Map<String, List<UserResponse>>>builder()
@@ -40,7 +40,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping(path = "/users/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/users/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Map<String, UserResponse>> get(@PathVariable("userId") String userId) {
         UserResponse user = userService.get(userId);
         return ApiResponse.<Map<String, UserResponse>>builder()
