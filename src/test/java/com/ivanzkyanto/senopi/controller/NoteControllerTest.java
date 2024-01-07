@@ -544,4 +544,45 @@ class NoteControllerTest {
                 MockMvcResultMatchers.jsonPath("message").value("Anda tidak berhak mengakses resource ini")
         );
     }
+
+    @Test
+    void export() throws Exception {
+        for (int i = 1; i <= 3; i++) {
+            Note note = Note.builder()
+                    .title("Catatan " + i)
+                    .body("Ini adalah catatan " + i)
+                    .owner(user)
+                    .build();
+
+            noteRepository.save(note);
+            for (int j = 1; j <= 2; j++) {
+                Tag tag = Tag.builder()
+                        .note(note)
+                        .body("tag-" + i + "-" + j)
+                        .build();
+
+                tagRepository.save(tag);
+            }
+        }
+
+        String json = """
+                {
+                    "targetEmail": "user@example.com"
+                }
+                """;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/export/notes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", String.format("Bearer %s", token))
+                        .content(json)
+        ).andExpectAll(
+                MockMvcResultMatchers.status().isCreated(),
+                MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                MockMvcResultMatchers.jsonPath("status").value("success"),
+                MockMvcResultMatchers.jsonPath("message").value("Permintaan Anda dalam antrean")
+        );
+    }
+
 }

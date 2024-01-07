@@ -10,3 +10,40 @@ services:
       POSTGRES_USER: '${POSTGRES_USER:-user}'
     ports:
       - '5432:5432'
+  rabbitmq:
+    image: 'rabbitmq:management-alpine'
+    restart: on-failure
+    environment:
+      RABBITMQ_USER: '${RABBITMQ_USER:-user}'
+      RABBITMQ_PASSWORD: '${RABBITMQ_PASSWORD:-password}'
+      RABBITMQ_MANAGEMENT_PORT: '${RABBITMQ_MANAGEMENT_PORT:-15672}'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+#  consumer:
+#    build:
+#      context: ./docker/consumer
+#      dockerfile: Dockerfile
+#    restart: on-failure
+#    environment:
+#      RABBITMQ_SERVER: '${RABBITMQ_HOST:-localhost}'
+#    depends_on:
+#      - postgres
+  smtp:
+    image: axllent/mailpit
+    command: --smtp-auth-allow-insecure
+    restart: on-failure
+    environment:
+      MP_DATA_FILE: '/data/mailpit.db'
+      MP_SMTP_AUTH: 'user:password'
+      TZ: Asia/Jakarta
+    volumes:
+      - mailpit-data:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
+volumes:
+  mailpit-data:
+    driver: local
