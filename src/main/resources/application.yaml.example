@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: senopi
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_POST:5432}/${POSTGRES_DB:senopi}
+    username: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:secret}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: ${HIKARI_MINIMUM_IDLE:10}
+      maximum-pool-size: ${HIKARI_MAXIMUM_POOL_SIZE:50}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:user}
+    password: ${RABBITMQ_PASSWORD:password}
+server:
+  port:
+  error:
+    include-message: always
+logging:
+  level:
+    org:
+      springframework:
+        security: trace
+rsa:
+  private-key: classpath:certs/private-key.pem
+  public-key: classpath:certs/public-key.pem
