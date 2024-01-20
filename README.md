@@ -35,6 +35,8 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 ```
 You can follow the example file in [`application.yaml.example`](https://github.com/stackpan/senopi/blob/main/src/main/resources/application.yaml.example) file inside resource classpath
 
+And migrate the database. You can find the sql sample file [here](https://github.com/stackpan/senopi/blob/main/database.sql)
+
 2. AMQP server setup
 Senopi has a feature to exporting notes using queue job so it will require an AMQP server to fulfill this functionality. We have used RabbitMQ as AMQP server because it is easy to use. To configure AMQP server, fill these keys in application configuration:
 ```
